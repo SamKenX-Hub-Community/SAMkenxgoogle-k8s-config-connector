@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC.
+// Copyright 2023 Google LLC.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -389,7 +389,9 @@ type Binding struct {
 	// (https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts).
 	// For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`.
 	// * `group:{emailid}`: An email address that represents a Google group.
-	// For example, `admins@example.com`. *
+	// For example, `admins@example.com`. * `domain:{domain}`: The G Suite
+	// domain (primary) that represents all the users of that domain. For
+	// example, `google.com` or `example.com`. *
 	// `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus
 	// unique identifier) representing a user that has been recently
 	// deleted. For example, `alice@example.com?uid=123456789012345678901`.
@@ -406,9 +408,7 @@ type Binding struct {
 	// that has been recently deleted. For example,
 	// `admins@example.com?uid=123456789012345678901`. If the group is
 	// recovered, this value reverts to `group:{emailid}` and the recovered
-	// group retains the role in the binding. * `domain:{domain}`: The G
-	// Suite domain (primary) that represents all the users of that domain.
-	// For example, `google.com` or `example.com`.
+	// group retains the role in the binding.
 	Members []string `json:"members,omitempty"`
 
 	// Role: Role that is assigned to the list of `members`, or principals.
@@ -675,6 +675,10 @@ type EffectiveTag struct {
 	// TagKey: The name of the TagKey, in the format `tagKeys/{id}`, such as
 	// `tagKeys/123`.
 	TagKey string `json:"tagKey,omitempty"`
+
+	// TagKeyParentName: The parent name of the tag key. Must be in the
+	// format `organizations/{organization_id}`.
+	TagKeyParentName string `json:"tagKeyParentName,omitempty"`
 
 	// TagValue: Resource name for TagValue in the format `tagValues/456`.
 	TagValue string `json:"tagValue,omitempty"`
@@ -1768,7 +1772,7 @@ type Project struct {
 	// following regular expression: \a-z\ (\[-a-z0-9\]*\[a-z0-9\])?. Label
 	// values must be between 0 and 63 characters long and must conform to
 	// the regular expression (\a-z\ (\[-a-z0-9\]*\[a-z0-9\])?)?. No more
-	// than 256 labels can be associated with a given resource. Clients
+	// than 64 labels can be associated with a given resource. Clients
 	// should store labels in a representation such as JSON that does not
 	// depend on specific characters being disallowed. Example:
 	// "myBusinessDimension" : "businessValue"
@@ -3257,12 +3261,13 @@ func (c *FoldersListCall) PageToken(pageToken string) *FoldersListCall {
 	return c
 }
 
-// Parent sets the optional parameter "parent": Required. The resource
-// name of the organization or folder whose folders are being listed.
-// Must be of the form `folders/{folder_id}` or
-// `organizations/{org_id}`. Access to this method is controlled by
-// checking the `resourcemanager.folders.list` permission on the
-// `parent`.
+// Parent sets the optional parameter "parent": Required. The name of
+// the parent resource whose folders are being listed. Only children of
+// this parent resource are listed; descendants are not listed. If the
+// parent is a folder, use the value `folders/{folder_id}`. If the
+// parent is an organization, use the value `organizations/{org_id}`.
+// Access to this method is controlled by checking the
+// `resourcemanager.folders.list` permission on the `parent`.
 func (c *FoldersListCall) Parent(parent string) *FoldersListCall {
 	c.urlParams_.Set("parent", parent)
 	return c
@@ -3390,7 +3395,7 @@ func (c *FoldersListCall) Do(opts ...googleapi.CallOption) (*ListFoldersResponse
 	//       "type": "string"
 	//     },
 	//     "parent": {
-	//       "description": "Required. The resource name of the organization or folder whose folders are being listed. Must be of the form `folders/{folder_id}` or `organizations/{org_id}`. Access to this method is controlled by checking the `resourcemanager.folders.list` permission on the `parent`.",
+	//       "description": "Required. The name of the parent resource whose folders are being listed. Only children of this parent resource are listed; descendants are not listed. If the parent is a folder, use the value `folders/{folder_id}`. If the parent is an organization, use the value `organizations/{org_id}`. Access to this method is controlled by checking the `resourcemanager.folders.list` permission on the `parent`.",
 	//       "location": "query",
 	//       "type": "string"
 	//     },
@@ -6604,9 +6609,10 @@ func (c *ProjectsListCall) PageToken(pageToken string) *ProjectsListCall {
 }
 
 // Parent sets the optional parameter "parent": Required. The name of
-// the parent resource to list projects under. For example, setting this
-// field to 'folders/1234' would list all projects directly under that
-// folder.
+// the parent resource whose projects are being listed. Only children of
+// this parent resource are listed; descendants are not listed. If the
+// parent is a folder, use the value `folders/{folder_id}`. If the
+// parent is an organization, use the value `organizations/{org_id}`.
 func (c *ProjectsListCall) Parent(parent string) *ProjectsListCall {
 	c.urlParams_.Set("parent", parent)
 	return c
@@ -6734,7 +6740,7 @@ func (c *ProjectsListCall) Do(opts ...googleapi.CallOption) (*ListProjectsRespon
 	//       "type": "string"
 	//     },
 	//     "parent": {
-	//       "description": "Required. The name of the parent resource to list projects under. For example, setting this field to 'folders/1234' would list all projects directly under that folder.",
+	//       "description": "Required. The name of the parent resource whose projects are being listed. Only children of this parent resource are listed; descendants are not listed. If the parent is a folder, use the value `folders/{folder_id}`. If the parent is an organization, use the value `organizations/{org_id}`.",
 	//       "location": "query",
 	//       "type": "string"
 	//     },
@@ -10155,9 +10161,7 @@ func (c *TagValuesListCall) PageToken(pageToken string) *TagValuesListCall {
 	return c
 }
 
-// Parent sets the optional parameter "parent": Required. Resource name
-// for TagKey, parent of the TagValues to be listed, in the format
-// `tagKeys/123`.
+// Parent sets the optional parameter "parent": Required.
 func (c *TagValuesListCall) Parent(parent string) *TagValuesListCall {
 	c.urlParams_.Set("parent", parent)
 	return c
@@ -10277,7 +10281,7 @@ func (c *TagValuesListCall) Do(opts ...googleapi.CallOption) (*ListTagValuesResp
 	//       "type": "string"
 	//     },
 	//     "parent": {
-	//       "description": "Required. Resource name for TagKey, parent of the TagValues to be listed, in the format `tagKeys/123`.",
+	//       "description": "Required.",
 	//       "location": "query",
 	//       "type": "string"
 	//     }
