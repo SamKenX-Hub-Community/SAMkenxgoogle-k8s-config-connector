@@ -1,4 +1,4 @@
-// Copyright 2022 Google LLC.
+// Copyright 2023 Google LLC.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -688,7 +688,9 @@ type Binding struct {
 	// (https://cloud.google.com/kubernetes-engine/docs/how-to/kubernetes-service-accounts).
 	// For example, `my-project.svc.id.goog[my-namespace/my-kubernetes-sa]`.
 	// * `group:{emailid}`: An email address that represents a Google group.
-	// For example, `admins@example.com`. *
+	// For example, `admins@example.com`. * `domain:{domain}`: The G Suite
+	// domain (primary) that represents all the users of that domain. For
+	// example, `google.com` or `example.com`. *
 	// `deleted:user:{emailid}?uid={uniqueid}`: An email address (plus
 	// unique identifier) representing a user that has been recently
 	// deleted. For example, `alice@example.com?uid=123456789012345678901`.
@@ -705,9 +707,7 @@ type Binding struct {
 	// that has been recently deleted. For example,
 	// `admins@example.com?uid=123456789012345678901`. If the group is
 	// recovered, this value reverts to `group:{emailid}` and the recovered
-	// group retains the role in the binding. * `domain:{domain}`: The G
-	// Suite domain (primary) that represents all the users of that domain.
-	// For example, `google.com` or `example.com`.
+	// group retains the role in the binding.
 	Members []string `json:"members,omitempty"`
 
 	// Role: Role that is assigned to the list of `members`, or principals.
@@ -1886,9 +1886,9 @@ func (s *HotTablet) UnmarshalJSON(data []byte) error {
 // serve them. All tables in an instance are served from all Clusters in
 // the instance.
 type Instance struct {
-	// CreateTime: Output only. A server-assigned timestamp representing
-	// when this Instance was created. For instances created before this
-	// field was added (August 2021), this value is `seconds: 0, nanos: 1`.
+	// CreateTime: Output only. A commit timestamp representing when this
+	// Instance was created. For instances created before this field was
+	// added (August 2021), this value is `seconds: 0, nanos: 1`.
 	CreateTime string `json:"createTime,omitempty"`
 
 	// DisplayName: Required. The descriptive name for this instance as it
@@ -3111,7 +3111,7 @@ type Table struct {
 
 	// DeletionProtection: Set to true to make the table protected against
 	// data loss. i.e. deleting the following resources through Admin APIs
-	// are prohibited: - The table. - The column families in the table. -
+	// are prohibited: * The table. * The column families in the table. *
 	// The instance containing the table. Note one can still delete the data
 	// stored in the table through Data APIs.
 	DeletionProtection bool `json:"deletionProtection,omitempty"`

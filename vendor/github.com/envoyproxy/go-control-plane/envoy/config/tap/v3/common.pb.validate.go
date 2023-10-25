@@ -283,9 +283,20 @@ func (m *MatchPredicate) validate(all bool) error {
 
 	var errors []error
 
-	switch m.Rule.(type) {
-
+	oneofRulePresent := false
+	switch v := m.Rule.(type) {
 	case *MatchPredicate_OrMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetOrMatch()).(type) {
@@ -317,6 +328,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_AndMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetAndMatch()).(type) {
@@ -348,6 +370,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_NotMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetNotMatch()).(type) {
@@ -379,6 +412,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_AnyMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if m.GetAnyMatch() != true {
 			err := MatchPredicateValidationError{
@@ -392,6 +436,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_HttpRequestHeadersMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetHttpRequestHeadersMatch()).(type) {
@@ -423,6 +478,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_HttpRequestTrailersMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetHttpRequestTrailersMatch()).(type) {
@@ -454,6 +520,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_HttpResponseHeadersMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetHttpResponseHeadersMatch()).(type) {
@@ -485,6 +562,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_HttpResponseTrailersMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetHttpResponseTrailersMatch()).(type) {
@@ -516,6 +604,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_HttpRequestGenericBodyMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetHttpRequestGenericBodyMatch()).(type) {
@@ -547,6 +646,17 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	case *MatchPredicate_HttpResponseGenericBodyMatch:
+		if v == nil {
+			err := MatchPredicateValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if all {
 			switch v := interface{}(m.GetHttpResponseGenericBodyMatch()).(type) {
@@ -578,6 +688,9 @@ func (m *MatchPredicate) validate(all bool) error {
 		}
 
 	default:
+		_ = v // ensures v is used
+	}
+	if !oneofRulePresent {
 		err := MatchPredicateValidationError{
 			field:  "Rule",
 			reason: "value is required",
@@ -586,7 +699,6 @@ func (m *MatchPredicate) validate(all bool) error {
 			return err
 		}
 		errors = append(errors, err)
-
 	}
 
 	if len(errors) > 0 {
@@ -1187,9 +1299,20 @@ func (m *OutputSink) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	switch m.OutputSinkType.(type) {
-
+	oneofOutputSinkTypePresent := false
+	switch v := m.OutputSinkType.(type) {
 	case *OutputSink_StreamingAdmin:
+		if v == nil {
+			err := OutputSinkValidationError{
+				field:  "OutputSinkType",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofOutputSinkTypePresent = true
 
 		if all {
 			switch v := interface{}(m.GetStreamingAdmin()).(type) {
@@ -1221,6 +1344,17 @@ func (m *OutputSink) validate(all bool) error {
 		}
 
 	case *OutputSink_FilePerTap:
+		if v == nil {
+			err := OutputSinkValidationError{
+				field:  "OutputSinkType",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofOutputSinkTypePresent = true
 
 		if all {
 			switch v := interface{}(m.GetFilePerTap()).(type) {
@@ -1252,6 +1386,17 @@ func (m *OutputSink) validate(all bool) error {
 		}
 
 	case *OutputSink_StreamingGrpc:
+		if v == nil {
+			err := OutputSinkValidationError{
+				field:  "OutputSinkType",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofOutputSinkTypePresent = true
 
 		if all {
 			switch v := interface{}(m.GetStreamingGrpc()).(type) {
@@ -1282,7 +1427,52 @@ func (m *OutputSink) validate(all bool) error {
 			}
 		}
 
+	case *OutputSink_BufferedAdmin:
+		if v == nil {
+			err := OutputSinkValidationError{
+				field:  "OutputSinkType",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofOutputSinkTypePresent = true
+
+		if all {
+			switch v := interface{}(m.GetBufferedAdmin()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, OutputSinkValidationError{
+						field:  "BufferedAdmin",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, OutputSinkValidationError{
+						field:  "BufferedAdmin",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetBufferedAdmin()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return OutputSinkValidationError{
+					field:  "BufferedAdmin",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
 	default:
+		_ = v // ensures v is used
+	}
+	if !oneofOutputSinkTypePresent {
 		err := OutputSinkValidationError{
 			field:  "OutputSinkType",
 			reason: "value is required",
@@ -1291,7 +1481,6 @@ func (m *OutputSink) validate(all bool) error {
 			return err
 		}
 		errors = append(errors, err)
-
 	}
 
 	if len(errors) > 0 {
@@ -1472,6 +1661,148 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = StreamingAdminSinkValidationError{}
+
+// Validate checks the field values on BufferedAdminSink with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *BufferedAdminSink) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on BufferedAdminSink with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// BufferedAdminSinkMultiError, or nil if none found.
+func (m *BufferedAdminSink) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *BufferedAdminSink) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.GetMaxTraces() <= 0 {
+		err := BufferedAdminSinkValidationError{
+			field:  "MaxTraces",
+			reason: "value must be greater than 0",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if all {
+		switch v := interface{}(m.GetTimeout()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, BufferedAdminSinkValidationError{
+					field:  "Timeout",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, BufferedAdminSinkValidationError{
+					field:  "Timeout",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetTimeout()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return BufferedAdminSinkValidationError{
+				field:  "Timeout",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return BufferedAdminSinkMultiError(errors)
+	}
+
+	return nil
+}
+
+// BufferedAdminSinkMultiError is an error wrapping multiple validation errors
+// returned by BufferedAdminSink.ValidateAll() if the designated constraints
+// aren't met.
+type BufferedAdminSinkMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m BufferedAdminSinkMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m BufferedAdminSinkMultiError) AllErrors() []error { return m }
+
+// BufferedAdminSinkValidationError is the validation error returned by
+// BufferedAdminSink.Validate if the designated constraints aren't met.
+type BufferedAdminSinkValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e BufferedAdminSinkValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e BufferedAdminSinkValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e BufferedAdminSinkValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e BufferedAdminSinkValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e BufferedAdminSinkValidationError) ErrorName() string {
+	return "BufferedAdminSinkValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e BufferedAdminSinkValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sBufferedAdminSink.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = BufferedAdminSinkValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = BufferedAdminSinkValidationError{}
 
 // Validate checks the field values on FilePerTapSink with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
@@ -1898,9 +2229,20 @@ func (m *HttpGenericBodyMatch_GenericTextMatch) validate(all bool) error {
 
 	var errors []error
 
-	switch m.Rule.(type) {
-
+	oneofRulePresent := false
+	switch v := m.Rule.(type) {
 	case *HttpGenericBodyMatch_GenericTextMatch_StringMatch:
+		if v == nil {
+			err := HttpGenericBodyMatch_GenericTextMatchValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if utf8.RuneCountInString(m.GetStringMatch()) < 1 {
 			err := HttpGenericBodyMatch_GenericTextMatchValidationError{
@@ -1914,6 +2256,17 @@ func (m *HttpGenericBodyMatch_GenericTextMatch) validate(all bool) error {
 		}
 
 	case *HttpGenericBodyMatch_GenericTextMatch_BinaryMatch:
+		if v == nil {
+			err := HttpGenericBodyMatch_GenericTextMatchValidationError{
+				field:  "Rule",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		oneofRulePresent = true
 
 		if len(m.GetBinaryMatch()) < 1 {
 			err := HttpGenericBodyMatch_GenericTextMatchValidationError{
@@ -1927,6 +2280,9 @@ func (m *HttpGenericBodyMatch_GenericTextMatch) validate(all bool) error {
 		}
 
 	default:
+		_ = v // ensures v is used
+	}
+	if !oneofRulePresent {
 		err := HttpGenericBodyMatch_GenericTextMatchValidationError{
 			field:  "Rule",
 			reason: "value is required",
@@ -1935,7 +2291,6 @@ func (m *HttpGenericBodyMatch_GenericTextMatch) validate(all bool) error {
 			return err
 		}
 		errors = append(errors, err)
-
 	}
 
 	if len(errors) > 0 {
